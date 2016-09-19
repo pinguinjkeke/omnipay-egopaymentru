@@ -316,4 +316,17 @@ class Gateway extends AbstractGateway
 
         return $this->setParameter('language', $language);
     }
+
+    /**
+     * Your application send order registration request to gateway.
+     *
+     * @param array $parameters
+     * @return \Omnipay\Common\Message\AbstractRequest
+     * @throws \Omnipay\Common\Exception\RuntimeException
+     * @link https://tws.egopay.ru/docs/v2/#p-3.1
+     */
+    public function register(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\Ego\Message\RegisterRequest', $parameters);
+    }
 }
