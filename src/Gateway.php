@@ -345,6 +345,20 @@ class Gateway extends AbstractGateway
     }
 
     /**
+     * Reject the order (works in pair with confirm)
+     * Use only if you specified this in bank contract
+     *
+     * @param array $parameters
+     * @return \Omnipay\Common\Message\AbstractRequest
+     * @throws \Omnipay\Common\Exception\RuntimeException
+     * @link https://tws.egopay.ru/docs/v2/#p-5.3
+     */
+    public function reject(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\Ego\Message\RejectRequest', $parameters);
+    }
+
+    /**
      * Your application send order registration request to gateway.
      *
      * @param array $parameters
