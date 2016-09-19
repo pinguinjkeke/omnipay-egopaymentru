@@ -331,6 +331,20 @@ class Gateway extends AbstractGateway
     }
 
     /**
+     * In some cases you may use payments with confirmation
+     * Use only if you specified this in bank contract
+     *
+     * @param array $parameters
+     * @return \Omnipay\Common\Message\AbstractRequest
+     * @throws \Omnipay\Common\Exception\RuntimeException
+     * @link https://tws.egopay.ru/docs/v2/#p-5.2
+     */
+    public function confirm(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\Ego\Message\ConfirmRequest', $parameters);
+    }
+
+    /**
      * Your application send order registration request to gateway.
      *
      * @param array $parameters
