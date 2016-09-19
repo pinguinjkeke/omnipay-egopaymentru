@@ -327,7 +327,7 @@ class Gateway extends AbstractGateway
      */
     public function cancel(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\Ego\Message\CancelRequest', $parameters);
+        return $this->createRequest('\Omnipay\EgopaymentRu\Message\CancelRequest', $parameters);
     }
 
     /**
@@ -341,7 +341,7 @@ class Gateway extends AbstractGateway
      */
     public function confirm(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\Ego\Message\ConfirmRequest', $parameters);
+        return $this->createRequest('\Omnipay\EgopaymentRu\Message\ConfirmRequest', $parameters);
     }
 
     /**
@@ -355,7 +355,7 @@ class Gateway extends AbstractGateway
      */
     public function reject(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\Ego\Message\RejectRequest', $parameters);
+        return $this->createRequest('\Omnipay\EgopaymentRu\Message\RejectRequest', $parameters);
     }
 
     /**
@@ -368,7 +368,7 @@ class Gateway extends AbstractGateway
      */
     public function refund(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\Ego\Message\RefundRequest', $parameters);
+        return $this->createRequest('\Omnipay\EgopaymentRu\Message\RefundRequest', $parameters);
     }
 
     /**
@@ -381,7 +381,7 @@ class Gateway extends AbstractGateway
      */
     public function register(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\Ego\Message\RegisterRequest', $parameters);
+        return $this->createRequest('\Omnipay\EgopaymentRu\Message\RegisterRequest', $parameters);
     }
 
     /**
@@ -398,6 +398,6 @@ class Gateway extends AbstractGateway
         $this->setEndpoint(true);
         $this->setWsdl(__DIR__ . '/Resource/statusv4.xml');
 
-        return $this->createRequest('\Omnipay\Ego\Message\GetByOrderRequest', $parameters);
+        return $this->createRequest('\Omnipay\EgopaymentRu\Message\GetByOrderRequest', $parameters);
     }
 }
