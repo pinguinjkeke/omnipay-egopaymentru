@@ -359,6 +359,19 @@ class Gateway extends AbstractGateway
     }
 
     /**
+     * Refund the order money to client
+     *
+     * @param array $parameters
+     * @return \Omnipay\Common\Message\AbstractRequest
+     * @throws \Omnipay\Common\Exception\RuntimeException
+     * @link https://tws.egopay.ru/docs/v2/#p-5.4
+     */
+    public function refund(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\Ego\Message\RefundRequest', $parameters);
+    }
+
+    /**
      * Your application send order registration request to gateway.
      *
      * @param array $parameters
