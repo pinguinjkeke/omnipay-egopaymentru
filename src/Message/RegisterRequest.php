@@ -318,6 +318,12 @@ class RegisterRequest extends SoapAbstractRequest
                 'shop_id' => $this->getShopId(),
                 'number' => $this->getOrderId()
             ),
+            'customer' => array(
+                'id' => $this->getCustomerId(),
+                'name' => $this->getCustomerName(),
+                'email' => $this->getCustomerEmail(),
+                'phone' => $this->getCustomerPhone()
+            ),
             'cost' => array(
                 'amount' => $this->getAmount(),
                 'currency' => $this->getCurrency()
@@ -333,15 +339,6 @@ class RegisterRequest extends SoapAbstractRequest
                 array('name' => 'ChoosenCardType', 'value' => 'VI')
             )
         );
-
-        if ($this->getCustomerId()) {
-            $data['customer'] = array(
-                'id' => $this->getCustomerId(),
-                'name' => $this->getCustomerName(),
-                'email' => $this->getCustomerEmail(),
-                'phone' => $this->getCustomerPhone()
-            );
-        }
 
         if (!empty($this->items)) {
             $data['description']['items'] = $this->items;
