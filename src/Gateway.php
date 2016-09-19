@@ -383,4 +383,21 @@ class Gateway extends AbstractGateway
     {
         return $this->createRequest('\Omnipay\Ego\Message\RegisterRequest', $parameters);
     }
+
+    /**
+     * Order info.
+     * After order registration, your application can get order status
+     *
+     * @param array $parameters
+     * @return \Omnipay\Common\Message\AbstractRequest
+     * @throws \Omnipay\Common\Exception\RuntimeException
+     * @link https://tws.egopay.ru/docs/v41/#p-2
+     */
+    public function status(array $parameters = array())
+    {
+        $this->setEndpoint(true);
+        $this->setWsdl(__DIR__ . '/Resource/statusv4.xml');
+
+        return $this->createRequest('\Omnipay\Ego\Message\GetByOrderRequest', $parameters);
+    }
 }
