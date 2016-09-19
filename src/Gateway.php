@@ -210,7 +210,7 @@ class Gateway extends AbstractGateway
      */
     public function getOrderId()
     {
-        return $this->getParameter('number');
+        return $this->getParameter('order_id');
     }
 
     /**
@@ -221,7 +221,7 @@ class Gateway extends AbstractGateway
      */
     public function setOrderId($orderId)
     {
-        return $this->setParameter('number', $orderId);
+        return $this->setParameter('order_id', $orderId);
     }
 
     /**
