@@ -24,16 +24,16 @@ class RegisterRequest extends SoapAbstractRequest
      *
      * @var array
      */
-    protected static $modes = [
+    protected static $modes = array(
         'online', 'offline', 'simple'
-    ];
+    );
 
     /**
      * Items in order
      *
      * @var array
      */
-    protected $items = [];
+    protected $items = array();
 
     /**
      * Get register mode
@@ -248,12 +248,12 @@ class RegisterRequest extends SoapAbstractRequest
 
             return $this;
         } elseif ($item instanceof OrderItemContract) {
-            $this->items[] = [
+            $this->items[] = array(
                 'typename' => $item->getOrderItemTypeName(),
                 'number' => $item->getOrderItemNumber(),
                 'amount' => $item->getOrderItemCost(),
                 'host' => $item->getOrderItemHost()
-            ];
+            );
 
             return $this;
         }
