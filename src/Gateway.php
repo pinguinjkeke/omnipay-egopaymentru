@@ -318,6 +318,19 @@ class Gateway extends AbstractGateway
     }
 
     /**
+     * Cancel request
+     *
+     * @param array $parameters
+     * @return \Omnipay\Common\Message\AbstractRequest
+     * @throws \Omnipay\Common\Exception\RuntimeException
+     * @link https://tws.egopay.ru/docs/v2/#p-5
+     */
+    public function cancel(array $parameters = array())
+    {
+        return $this->createRequest('\Omnipay\Ego\Message\CancelRequest', $parameters);
+    }
+
+    /**
      * Your application send order registration request to gateway.
      *
      * @param array $parameters
