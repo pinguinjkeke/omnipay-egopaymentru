@@ -309,7 +309,7 @@ class RegisterRequest extends SoapAbstractRequest
     public function getData()
     {
         $this->validate(
-            'shop_id', 'number', 'amount', 'currency',
+            'shop_id', 'order_id', 'amount', 'currency',
             'customer_id', 'customer_name', 'customer_email', 'customer_phone'
         );
 

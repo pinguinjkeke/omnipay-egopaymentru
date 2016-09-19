@@ -211,7 +211,7 @@ abstract class SoapAbstractRequest extends AbstractRequest
      */
     public function getData()
     {
-        $this->validate('shop_id', 'number');
+        $this->validate('shop_id', 'order_id');
 
         $this->request = array(
             'order' => array(
