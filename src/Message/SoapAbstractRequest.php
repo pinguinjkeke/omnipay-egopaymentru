@@ -181,28 +181,6 @@ abstract class SoapAbstractRequest extends AbstractRequest
     }
 
     /**
-     * Get language
-     *
-     * @return string
-     */
-    public function getLanguage()
-    {
-        return $this->getParameter('language');
-    }
-
-    /**
-     * Set language
-     *
-     * @param string $language
-     * @return AbstractRequest
-     * @throws \Omnipay\Common\Exception\RuntimeException
-     */
-    public function setLanguage($language)
-    {
-        return $this->setParameter('language', $language);
-    }
-
-    /**
      * Get the raw data array for this message. The format of this varies from gateway to
      * gateway, but will usually be either an associative array, or a SimpleXMLElement.
      *
@@ -250,8 +228,7 @@ abstract class SoapAbstractRequest extends AbstractRequest
 
             return $this->soapClient;
         } catch (SoapFault $e) {
-            // TODO implement log
-            echo $e->getMessage();
+            return null;
         }
     }
 
@@ -272,7 +249,9 @@ abstract class SoapAbstractRequest extends AbstractRequest
      */
     public function sendData($data)
     {
-        $soapClient = $this->buildSoapClient();
+        if (!$soapClient = $this->buildSoapClient()) {
+            return 'SOAP fail';
+        }
 
         try {
             return $this->runTransaction($soapClient, $data);

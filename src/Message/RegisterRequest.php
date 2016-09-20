@@ -64,6 +64,27 @@ class RegisterRequest extends SoapAbstractRequest
     }
 
     /**
+     * Set currency
+     *
+     * @param string $currency
+     * @return $this
+     * @throws \Omnipay\Common\Exception\RuntimeException
+     */
+    public function setCurrency($currency)
+    {
+        $currency = strtoupper($currency);
+        $currencies = ['RUB', 'EUR', 'USD'];
+
+        if (!in_array($currency, $currencies, true)) {
+            throw new RuntimeException(
+                'Currency must be one of [' . implode(',', $currencies) . "], but {$currency} given."
+            );
+        }
+
+        return $this->setParameter('currency', $currency);
+    }
+
+    /**
      * Get customer's id
      *
      * @return int
@@ -190,6 +211,38 @@ class RegisterRequest extends SoapAbstractRequest
     {
         return $this->setParameter('paytype', $paytype);
     }
+
+    /**
+     * Get language
+     *
+     * @return string
+     */
+    public function getLanguage()
+    {
+        return $this->getParameter('language');
+    }
+
+    /**
+     * Set language
+     *
+     * @param string $language Language from ['ru', 'en', 'de', 'cn']
+     * @return $this
+     * @throws RuntimeException
+     * @link https://tws.egopay.ru/docs/v2/#p-7.5
+     */
+    public function setLanguage($language)
+    {
+        $languages = array('ru', 'en', 'de', 'cn');
+
+        if (!in_array($language, $languages, true)) {
+            throw new RuntimeException(
+                'Language must be one of ' . implode(', ', $languages) . ", but {$language} given"
+            );
+        }
+
+        return $this->setParameter('language', $language);
+    }
+
 
     /**
      * Get success url

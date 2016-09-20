@@ -116,15 +116,10 @@ class Gateway extends AbstractGateway
         return array(
             'wsdl' => __DIR__ . '/Resource/orderv2_new.xml',
             'endpoint' => $this->testOrderEndpoint,
-            'url_ok' => '/payment/success/',
-            'url_fault' => '/payment/fail/',
             'shop_id' => '',
             'order_id' => '',
             'user' => '',
             'password' => '',
-            'paytype' => 'card',
-            'currency' => 'RUB',
-            'language' => 'ru'
         );
     }
 
@@ -277,118 +272,13 @@ class Gateway extends AbstractGateway
     }
 
     /**
-     * Set currency
-     *
-     * @param string $currency
-     * @return $this
-     * @throws \Omnipay\Common\Exception\RuntimeException
+     * Supports cancel
+     * 
+     * @return boolean
      */
-    public function setCurrency($currency)
+    public function supportsCancel()
     {
-        $currency = strtoupper($currency);
-        $currencies = ['RUB', 'EUR', 'USD'];
-
-        if (!in_array($currency, $currencies, true)) {
-            throw new RuntimeException(
-                'Currency must be one of [' . implode(',', $currencies) . "], but {$currency} given."
-            );
-        }
-
-        return $this->setParameter('currency', $currency);
-    }
-
-    /**
-     * Get payment type
-     *
-     * @return string
-     */
-    public function getPaytype()
-    {
-        return $this->getParameter('paytype');
-    }
-
-    /**
-     * Set payment type
-     *
-     * @param string $paytype
-     * @return $this
-     */
-    public function setPaytype($paytype)
-    {
-        return $this->setParameter('paytype', $paytype);
-    }
-
-    /**
-     * Get language
-     *
-     * @return string
-     */
-    public function getLanguage()
-    {
-        return $this->getParameter('language');
-    }
-
-    /**
-     * Set language
-     *
-     * @param string $language Language from ['ru', 'en', 'de', 'cn']
-     * @return $this
-     * @throws \Omnipay\Common\Exception\RuntimeException
-     * @link https://tws.egopay.ru/docs/v2/#p-7.5
-     */
-    public function setLanguage($language)
-    {
-        $languages = array('ru', 'en', 'de', 'cn');
-
-        if (!in_array($language, $languages, true)) {
-            throw new RuntimeException(
-                'Language must be one of ' . implode(', ', $languages) . ", but {$language} given"
-            );
-        }
-
-        return $this->setParameter('language', $language);
-    }
-
-    /**
-     * Get success url address
-     *
-     * @return string
-     */
-    public function getUrlOk()
-    {
-        return $this->getParameter('url_ok');
-    }
-
-    /**
-     * Set success url address
-     *
-     * @param string $url
-     * @return $this
-     */
-    public function setUrlOk($url)
-    {
-        return $this->setParameter('url_ok', $url);
-    }
-
-    /**
-     * Get fail url address
-     *
-     * @return string
-     */
-    public function getUrlFault()
-    {
-        return $this->getParameter('url_fault');
-    }
-
-    /**
-     * Set fail url address
-     *
-     * @param string $url
-     * @return $this
-     */
-    public function setUrlFault($url)
-    {
-        return $this->setParameter('url_fault', $url);
+        return method_exists($this, 'cancel');
     }
 
     /**
