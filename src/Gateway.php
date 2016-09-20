@@ -114,12 +114,9 @@ class Gateway extends AbstractGateway
     public function getDefaultParameters()
     {
         return array(
-            'wsdl' => __DIR__ . '/Resource/orderv2_new.xml',
+            'testMode' => false,
             'endpoint' => $this->testOrderEndpoint,
-            'shop_id' => '',
-            'order_id' => '',
-            'user' => '',
-            'password' => '',
+            'wsdl' => __DIR__ . '/Resource/orderv2_new.xml'
         );
     }
 
@@ -279,6 +276,46 @@ class Gateway extends AbstractGateway
     public function supportsCancel()
     {
         return method_exists($this, 'cancel');
+    }
+
+    /**
+     * Supports confirm
+     * 
+     * @return boolean
+     */
+    public function supportsConfirm()
+    {
+        return method_exists($this, 'confirm');
+    }
+
+    /**
+     * Supports reject
+     * 
+     * @return bool
+     */
+    public function supportsReject()
+    {
+        return method_exists($this, 'reject');
+    }
+
+    /**
+     * Support register
+     * 
+     * @return boolean
+     */
+    public function supportsRegister()
+    {
+        return method_exists($this, 'register');
+    }
+
+    /**
+     * Supports status
+     * 
+     * @return boolean
+     */
+    public function supportsStatus()
+    {
+        return method_exists($this, 'status');
     }
 
     /**

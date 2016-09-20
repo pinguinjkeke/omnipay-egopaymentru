@@ -95,7 +95,7 @@ abstract class SoapAbstractRequest extends AbstractRequest
     /**
      * Get shop id you received by Egopayment
      *
-     * @return string
+     * @return int
      */
     public function getShopId()
     {
@@ -189,7 +189,7 @@ abstract class SoapAbstractRequest extends AbstractRequest
      */
     public function getData()
     {
-        $this->validate('shop_id', 'order_id');
+        $this->validate('shop_id', 'order_id', 'user', 'password');
 
         $this->request = array(
             'order' => array(

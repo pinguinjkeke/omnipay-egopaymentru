@@ -32,7 +32,7 @@ class GetByOrderRequest extends SoapAbstractRequest
      */
     public function getData()
     {
-        $this->validate('shop_id', 'number');
+        $this->validate('shop_id', 'order_id', 'user', 'password');
         
         return array(
             'order' => array(

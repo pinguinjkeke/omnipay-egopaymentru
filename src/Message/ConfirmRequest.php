@@ -38,6 +38,8 @@ class ConfirmRequest extends SoapAbstractRequest
      */
     public function getData()
     {
+        $this->validate('shop_id', 'order_id', 'user', 'password', 'amount', 'currency', 'txn_id');
+        
         return array(
             'order' => array(
                 'shop_id' => $this->getShopId(),
