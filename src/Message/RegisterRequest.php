@@ -1,11 +1,11 @@
 <?php
 
-namespace Omnipay\EgopaymentRu\Message;
+namespace Omnipay\EgopayRu\Message;
 
 use Omnipay\Common\Exception\RuntimeException;
 use Omnipay\Common\Message\ResponseInterface;
-use Omnipay\EgopaymentRu\Contracts\CustomerContract;
-use Omnipay\EgopaymentRu\Contracts\OrderItemContract;
+use Omnipay\EgopayRu\Contracts\CustomerContract;
+use Omnipay\EgopayRu\Contracts\OrderItemContract;
 use SoapClient;
 
 /**

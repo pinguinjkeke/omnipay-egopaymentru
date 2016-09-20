@@ -1,11 +1,11 @@
 <?php
 
-namespace Omnipay\EgopaymentRu;
+namespace Omnipay\EgopayRu;
 
 use Guzzle\Http\ClientInterface;
 use Omnipay\Common\AbstractGateway;
 use Omnipay\Common\Exception\RuntimeException;
-use Omnipay\EgopaymentRu\Message\SoapAbstractRequest;
+use Omnipay\EgopayRu\Message\SoapAbstractRequest;
 use SoapClient;
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
 
@@ -99,7 +99,7 @@ class Gateway extends AbstractGateway
      */
     public function getName()
     {
-        return 'Egopayment';
+        return 'Egopay';
     }
 
     /**
@@ -115,14 +115,13 @@ class Gateway extends AbstractGateway
     {
         return array(
             'wsdl' => __DIR__ . '/Resource/orderv2_new.xml',
-            'endpoint' => $this->getTestMode() ? $this->testOrderEndpoint : $this->liveOrderEndpoint,
+            'endpoint' => $this->testOrderEndpoint,
             'url_ok' => '/payment/success/',
             'url_fault' => '/payment/fail/',
             'shop_id' => '',
-            'number' => '',
+            'order_id' => '',
             'user' => '',
             'password' => '',
-            'timelimit' => '',
             'paytype' => 'card',
             'currency' => 'RUB',
             'language' => 'ru'
@@ -166,12 +165,23 @@ class Gateway extends AbstractGateway
     }
 
     /**
+     * Set endpoint address
+     *
+     * @param string $endpoint
+     * @return $this
+     */
+    public function setEndpoint($endpoint)
+    {
+        return $this->setParameter('endpoint', $endpoint);
+    }
+
+    /**
      * Set status or order endpoint with or without test mode
      *
      * @param bool $statusEndpoint Status or order endpoint
      * @return string
      */
-    public function setEndpoint($statusEndpoint = false)
+    public function chooseEndpoint($statusEndpoint = false)
     {
         if ($statusEndpoint) {
             $endpoint = $this->getTestMode() ? $this->testStatusEndpoint : $this->liveStatusEndpoint;
@@ -225,7 +235,7 @@ class Gateway extends AbstractGateway
     }
 
     /**
-     * Get username you received from Egopayment
+     * Get username you received from Egopay
      *
      * @return string
      */
@@ -235,7 +245,7 @@ class Gateway extends AbstractGateway
     }
 
     /**
-     * Set username you received from Egopayment
+     * Set username you received from Egopay
      *
      * @param string $user
      * @return $this
@@ -246,7 +256,7 @@ class Gateway extends AbstractGateway
     }
 
     /**
-     * Get password you received from Egopayment
+     * Get password you received from Egopay
      *
      * @return string
      */
@@ -256,7 +266,7 @@ class Gateway extends AbstractGateway
     }
 
     /**
-     * Set password you received from Egopayment
+     * Set password you received from Egopay
      *
      * @param string $password
      * @return $this
@@ -275,6 +285,7 @@ class Gateway extends AbstractGateway
      */
     public function setCurrency($currency)
     {
+        $currency = strtoupper($currency);
         $currencies = ['RUB', 'EUR', 'USD'];
 
         if (!in_array($currency, $currencies, true)) {
@@ -284,6 +295,27 @@ class Gateway extends AbstractGateway
         }
 
         return $this->setParameter('currency', $currency);
+    }
+
+    /**
+     * Get payment type
+     *
+     * @return string
+     */
+    public function getPaytype()
+    {
+        return $this->getParameter('paytype');
+    }
+
+    /**
+     * Set payment type
+     *
+     * @param string $paytype
+     * @return $this
+     */
+    public function setPaytype($paytype)
+    {
+        return $this->setParameter('paytype', $paytype);
     }
 
     /**
@@ -318,6 +350,48 @@ class Gateway extends AbstractGateway
     }
 
     /**
+     * Get success url address
+     *
+     * @return string
+     */
+    public function getUrlOk()
+    {
+        return $this->getParameter('url_ok');
+    }
+
+    /**
+     * Set success url address
+     *
+     * @param string $url
+     * @return $this
+     */
+    public function setUrlOk($url)
+    {
+        return $this->setParameter('url_ok', $url);
+    }
+
+    /**
+     * Get fail url address
+     *
+     * @return string
+     */
+    public function getUrlFault()
+    {
+        return $this->getParameter('url_fault');
+    }
+
+    /**
+     * Set fail url address
+     *
+     * @param string $url
+     * @return $this
+     */
+    public function setUrlFault($url)
+    {
+        return $this->setParameter('url_fault', $url);
+    }
+
+    /**
      * Cancel request
      *
      * @param array $parameters
@@ -327,7 +401,7 @@ class Gateway extends AbstractGateway
      */
     public function cancel(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\EgopaymentRu\Message\CancelRequest', $parameters);
+        return $this->createRequest('\Omnipay\EgopayRu\Message\CancelRequest', $parameters);
     }
 
     /**
@@ -341,7 +415,7 @@ class Gateway extends AbstractGateway
      */
     public function confirm(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\EgopaymentRu\Message\ConfirmRequest', $parameters);
+        return $this->createRequest('\Omnipay\EgopayRu\Message\ConfirmRequest', $parameters);
     }
 
     /**
@@ -355,7 +429,7 @@ class Gateway extends AbstractGateway
      */
     public function reject(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\EgopaymentRu\Message\RejectRequest', $parameters);
+        return $this->createRequest('\Omnipay\EgopayRu\Message\RejectRequest', $parameters);
     }
 
     /**
@@ -368,7 +442,7 @@ class Gateway extends AbstractGateway
      */
     public function refund(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\EgopaymentRu\Message\RefundRequest', $parameters);
+        return $this->createRequest('\Omnipay\EgopayRu\Message\RefundRequest', $parameters);
     }
 
     /**
@@ -381,7 +455,7 @@ class Gateway extends AbstractGateway
      */
     public function register(array $parameters = array())
     {
-        return $this->createRequest('\Omnipay\EgopaymentRu\Message\RegisterRequest', $parameters);
+        return $this->createRequest('\Omnipay\EgopayRu\Message\RegisterRequest', $parameters);
     }
 
     /**
@@ -395,9 +469,9 @@ class Gateway extends AbstractGateway
      */
     public function status(array $parameters = array())
     {
-        $this->setEndpoint(true);
+        $this->chooseEndpoint(true);
         $this->setWsdl(__DIR__ . '/Resource/statusv4.xml');
 
-        return $this->createRequest('\Omnipay\EgopaymentRu\Message\GetByOrderRequest', $parameters);
+        return $this->createRequest('\Omnipay\EgopayRu\Message\GetByOrderRequest', $parameters);
     }
 }

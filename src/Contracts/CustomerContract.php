@@ -1,6 +1,6 @@
 <?php
 
-namespace Omnipay\EgopaymentRu\Contracts;
+namespace Omnipay\EgopayRu\Contracts;
 
 interface CustomerContract
 {

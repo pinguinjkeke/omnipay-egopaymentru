@@ -1,6 +1,6 @@
 <?php
 
-namespace Omnipay\EgopaymentRu\Message;
+namespace Omnipay\EgopayRu\Message;
 
 use Guzzle\Http\ClientInterface;
 use Omnipay\Common\Message\AbstractRequest;

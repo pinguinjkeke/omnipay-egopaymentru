@@ -1,9 +1,9 @@
 <?php
 
-namespace Omnipay\EgopaymentRu\Message;
+namespace Omnipay\EgopayRu\Message;
 
 use Omnipay\Common\Message\ResponseInterface;
-use Omnipay\EgopaymentRu\Contracts\OrderItemContract;
+use Omnipay\EgopayRu\Contracts\OrderItemContract;
 use SoapClient;
 
 class RefundRequest extends SoapAbstractRequest
