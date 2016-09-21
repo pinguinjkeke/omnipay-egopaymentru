@@ -75,6 +75,7 @@ class ConfirmRequest extends SoapAbstractRequest
      */
     protected function runTransaction(SoapClient $soapClient, $data)
     {
+        /** @noinspection PhpUndefinedMethodInspection */
         return $soapClient->confirm($data);
     }
 }

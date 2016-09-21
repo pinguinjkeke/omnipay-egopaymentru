@@ -2,6 +2,7 @@
 
 namespace Omnipay\EgopayRu\Message;
 
+use Omnipay\Common\Exception\RuntimeException;
 use Omnipay\Common\Message\ResponseInterface;
 use Omnipay\EgopayRu\Contracts\OrderItemContract;
 use SoapClient;
@@ -61,9 +62,10 @@ class RefundRequest extends SoapAbstractRequest
 
     /**
      * Add item for partial refund
-     * 
+     *
      * @param array|OrderItemContract $item
      * @return $this
+     * @throws \Omnipay\Common\Exception\RuntimeException
      */
     public function addItem($item)
     {
@@ -83,6 +85,8 @@ class RefundRequest extends SoapAbstractRequest
             
             return $this;
         }
+        
+        throw new RuntimeException('Item must be an array or implement OrderItemContract interface');
     }
 
     /**
@@ -94,6 +98,7 @@ class RefundRequest extends SoapAbstractRequest
      */
     protected function runTransaction(SoapClient $soapClient, $data)
     {
+        /** @noinspection PhpUndefinedMethodInspection */
         return $soapClient->refund($data);
     }
 
@@ -124,7 +129,7 @@ class RefundRequest extends SoapAbstractRequest
             'refund_id' => $this->getRefundId()
         );
         
-        if (!empty($this->items)) {
+        if (!count($this->items)) {
             $data['items'] = $this->items;
         }
 

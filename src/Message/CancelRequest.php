@@ -16,6 +16,7 @@ class CancelRequest extends SoapAbstractRequest
      */
     protected function runTransaction(SoapClient $soapClient, $data)
     {
+        /** @noinspection PhpUndefinedMethodInspection */
         return $soapClient->cancel($data);
     }
 

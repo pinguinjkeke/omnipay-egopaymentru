@@ -20,6 +20,7 @@ class GetByOrderRequest extends SoapAbstractRequest
      */
     protected function runTransaction(SoapClient $soapClient, $data)
     {
+        /** @noinspection PhpUndefinedMethodInspection */
         return $soapClient->get_by_order($data);
     }
 
