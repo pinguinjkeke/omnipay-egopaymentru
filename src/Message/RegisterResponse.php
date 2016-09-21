@@ -7,13 +7,24 @@ use Omnipay\Common\Message\RedirectResponseInterface;
 class RegisterResponse extends SoapResponse implements RedirectResponseInterface
 {
     /**
+     * Is the response successful?
+     * In most cases if response is an array then it's successful
+     *
+     * @return boolean
+     */
+    public function isSuccessful()
+    {
+        return is_array($this->data);
+    }
+
+    /**
      * Does the response require a redirect?
      *
      * @return boolean
      */
     public function isRedirect()
     {
-        return true;
+        return $this->isSuccessful();
     }
 
     /**
