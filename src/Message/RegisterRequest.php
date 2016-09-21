@@ -305,6 +305,7 @@ class RegisterRequest extends SoapAbstractRequest
                 'typename' => $item->getOrderItemTypeName(),
                 'number' => $item->getOrderItemNumber(),
                 'amount' => $item->getOrderItemCost(),
+                'descr' => $item->getOrderItemDescription(),
                 'host' => $item->getOrderItemHost()
             );
 
@@ -363,7 +364,8 @@ class RegisterRequest extends SoapAbstractRequest
     {
         $this->validate(
             'shop_id', 'order_id', 'user', 'password', 'amount', 'currency',
-            'customer_id', 'customer_name', 'customer_email', 'customer_phone'
+            'customer_id', 'customer_name', 'customer_email', 'customer_phone',
+            'language', 'url_ok', 'url_fault'
         );
 
         $data = array(

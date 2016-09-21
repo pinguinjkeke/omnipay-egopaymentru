@@ -20,11 +20,18 @@ interface OrderItemContract
     public function getOrderItemNumber();
 
     /**
-     * Item cost must be an array i.e. ['cost' => 10.0, 'currency' => 'RUB']
+     * Item cost must be an array i.e. ['amount' => 10.0, 'currency' => 'RUB']
      *
      * @return array
      */
     public function getOrderItemCost();
+
+    /**
+     * Order item description
+     * 
+     * @return string
+     */
+    public function getOrderItemDescription();
 
     /**
      * Distribution system
