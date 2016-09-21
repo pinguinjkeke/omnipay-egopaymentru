@@ -38,25 +38,25 @@ class RefundRequest extends SoapAbstractRequest
     }
 
     /**
-     * Get unique refund id
-     * 
+     * Get refund id you received from gate
+     *
      * @return string
      */
-    public function getTxnId()
+    public function getRefundId()
     {
-        return $this->getParameter('txn_id');
+        return $this->getParameter('refund_id');
     }
 
     /**
-     * Set unique refund id
+     * Set refund id you received from gate
      *
-     * @param string $txnId
+     * @param string $refundId
      * @return \Omnipay\Common\Message\AbstractRequest
      * @throws \Omnipay\Common\Exception\RuntimeException
      */
-    public function setTxnId($txnId)
+    public function setRefundId($refundId)
     {
-        return $this->setParameter('txn_id', $txnId);
+        return $this->setParameter('refund_id', $refundId);
     }
 
     /**
@@ -108,7 +108,7 @@ class RefundRequest extends SoapAbstractRequest
     {
         $this->validate(
             'shop_id', 'order_id', 'user', 'password',
-            'payment_id', 'amount', 'currency', 'txn_id'
+            'payment_id', 'amount', 'currency', 'refund_id'
         );
         
         $data = array(
@@ -121,7 +121,7 @@ class RefundRequest extends SoapAbstractRequest
                 'amount' => $this->getAmount(),
                 'currency' => $this->getCurrency()
             ),
-            'txn_id' => $this->getTxnId()
+            'refund_id' => $this->getRefundId()
         );
         
         if (!empty($this->items)) {
