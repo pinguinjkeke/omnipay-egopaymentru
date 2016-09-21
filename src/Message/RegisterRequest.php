@@ -319,7 +319,7 @@ class RegisterRequest extends SoapAbstractRequest
      * Sets order customer
      *
      * @param array|CustomerContract $customer
-     * @return \Omnipay\Common\Message\AbstractRequest
+     * @return $this
      * @throws \Omnipay\Common\Exception\RuntimeException
      */
     public function setCustomer($customer)

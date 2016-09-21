@@ -5,6 +5,11 @@ namespace Omnipay\EgopayRu;
 use Guzzle\Http\ClientInterface;
 use Omnipay\Common\AbstractGateway;
 use Omnipay\Common\Exception\RuntimeException;
+use Omnipay\EgopayRu\Message\CancelRequest;
+use Omnipay\EgopayRu\Message\GetByOrderRequest;
+use Omnipay\EgopayRu\Message\RefundRequest;
+use Omnipay\EgopayRu\Message\RegisterRequest;
+use Omnipay\EgopayRu\Message\RejectRequest;
 use Omnipay\EgopayRu\Message\SoapAbstractRequest;
 use SoapClient;
 use Symfony\Component\HttpFoundation\Request as HttpRequest;
@@ -89,6 +94,11 @@ class Gateway extends AbstractGateway
         $obj = new $class($this->httpClient, $this->httpRequest, $this->soapClient);
 
         return $obj->initialize(array_replace($this->getParameters(), $parameters));
+    }
+
+    public function setSoapClient(SoapClient $soapClient)
+    {
+        $this->soapClient = $soapClient;
     }
 
     /**
@@ -322,7 +332,7 @@ class Gateway extends AbstractGateway
      * Cancel request
      *
      * @param array $parameters
-     * @return \Omnipay\Common\Message\AbstractRequest
+     * @return CancelRequest
      * @throws \Omnipay\Common\Exception\RuntimeException
      * @link https://tws.egopay.ru/docs/v2/#p-5
      */
@@ -350,7 +360,7 @@ class Gateway extends AbstractGateway
      * Use only if you specified this in bank contract
      *
      * @param array $parameters
-     * @return \Omnipay\Common\Message\AbstractRequest
+     * @return RejectRequest
      * @throws \Omnipay\Common\Exception\RuntimeException
      * @link https://tws.egopay.ru/docs/v2/#p-5.3
      */
@@ -363,7 +373,7 @@ class Gateway extends AbstractGateway
      * Refund the order money to client
      *
      * @param array $parameters
-     * @return \Omnipay\Common\Message\AbstractRequest
+     * @return RefundRequest
      * @throws \Omnipay\Common\Exception\RuntimeException
      * @link https://tws.egopay.ru/docs/v2/#p-5.4
      */
@@ -376,7 +386,7 @@ class Gateway extends AbstractGateway
      * Your application send order registration request to gateway.
      *
      * @param array $parameters
-     * @return \Omnipay\Common\Message\AbstractRequest
+     * @return RegisterRequest
      * @throws \Omnipay\Common\Exception\RuntimeException
      * @link https://tws.egopay.ru/docs/v2/#p-3.1
      */
@@ -390,7 +400,7 @@ class Gateway extends AbstractGateway
      * After order registration, your application can get order status
      *
      * @param array $parameters
-     * @return \Omnipay\Common\Message\AbstractRequest
+     * @return GetByOrderRequest
      * @throws \Omnipay\Common\Exception\RuntimeException
      * @link https://tws.egopay.ru/docs/v41/#p-2
      */
