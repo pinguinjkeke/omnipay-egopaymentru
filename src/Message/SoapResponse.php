@@ -16,9 +16,9 @@ class SoapResponse extends AbstractResponse
     {
         parent::__construct($request, $data);
 
-        $this->data = is_string($data)
-            ? $data
-            : json_decode(json_encode($data->retval), true);
+        $this->data = is_object($data)
+            ? json_decode(json_encode($data->retval), true)
+            : $data;
     }
 
     /**
@@ -29,6 +29,9 @@ class SoapResponse extends AbstractResponse
      */
     public function isSuccessful()
     {
-        return is_array($this->data);
+        return is_array($this->data) &&
+            array_key_exists('error', $this->data) &&
+            array_key_exists('code', $this->data['error']) &&
+            $this->data['error']['code'] === 'ok';
     }
 }
