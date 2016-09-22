@@ -363,9 +363,19 @@ class RegisterRequest extends SoapAbstractRequest
     public function getData()
     {
         $this->validate(
-            'shop_id', 'order_id', 'user', 'password', 'amount', 'currency',
-            'customer_id', 'customer_name', 'customer_email', 'customer_phone',
-            'language', 'url_ok', 'url_fault'
+            'shop_id',
+            'order_id',
+            'user',
+            'password',
+            'amount',
+            'currency',
+            'customer_id',
+            'customer_name',
+            'customer_email',
+            'customer_phone',
+            'language',
+            'url_ok',
+            'url_fault'
         );
 
         $data = array(

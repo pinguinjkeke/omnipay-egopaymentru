@@ -112,8 +112,14 @@ class RefundRequest extends SoapAbstractRequest
     public function getData()
     {
         $this->validate(
-            'shop_id', 'order_id', 'user', 'password',
-            'payment_id', 'amount', 'currency', 'refund_id'
+            'shop_id',
+            'order_id',
+            'user',
+            'password',
+            'payment_id',
+            'amount',
+            'currency',
+            'refund_id'
         );
 
         $data = array(
