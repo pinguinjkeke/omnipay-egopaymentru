@@ -395,7 +395,7 @@ class RegisterRequest extends SoapAbstractRequest
             )
         );
 
-        if (!count($this->items)) {
+        if (count($this->items)) {
             $data['description']['items'] = $this->items;
         }
 
