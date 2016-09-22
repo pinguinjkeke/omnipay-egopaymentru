@@ -43,6 +43,7 @@ class RegisterResponseTest extends AbstractResponseTest
     {
         $this->assertTrue($this->responseSuccess->isSuccessful());
         $this->assertTrue($this->responseSuccess->isRedirect());
+        $this->assertFalse($this->responseSuccess->getRedirectData());
         $this->assertEquals(
             $this->responseSuccess->getRedirectUrl(),
             'https://sandbox.egopay.ru/payments/request?session=123456'
