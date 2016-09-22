@@ -35,6 +35,16 @@ class RejectRequestTest extends AbstractRequestTest
     }
 
     /**
+     * Response class name
+     *
+     * @return string
+     */
+    protected function getResponseClassName()
+    {
+        return 'RejectResponse';
+    }
+
+    /**
      * Request parameters
      *
      * @return array

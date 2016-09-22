@@ -54,6 +54,13 @@ abstract class AbstractRequestTest extends TestCase
     abstract protected function getRequestClassName();
 
     /**
+     * Response class name
+     *
+     * @return string
+     */
+    abstract protected function getResponseClassName();
+
+    /**
      * Request parameters
      *
      * @return array
@@ -83,6 +90,7 @@ abstract class AbstractRequestTest extends TestCase
 
         $this->request = new $requestClass($this->getHttpClient(), $this->getHttpRequest());
         $this->request->initialize($this->getRequestParameters());
+        $this->request->setEndpoint('https://tws.egopay.ru/order/v2/');
     }
 
     /**
@@ -94,6 +102,20 @@ abstract class AbstractRequestTest extends TestCase
             $getter = 'get' . ucfirst($this->camelCase($parameter));
             $this->assertSame($value, $this->request->{$getter}());
         }
+    }
+
+    /**
+     * Test sendData method
+     */
+    public function testSendData()
+    {
+        $responseClass = '\\Omnipay\\EgopayRu\\Message\\' . $this->getResponseClassName();
+
+        if (!class_exists($responseClass)) {
+            throw new RuntimeException("Cannot find \"{$responseClass}\" class");
+        }
+
+        $this->assertInstanceOf($responseClass, $this->request->send());
     }
 
     /**

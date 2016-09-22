@@ -13,6 +13,16 @@ class GetByOrderRequestTest extends AbstractRequestTest
     {
         return 'GetByOrderRequest';
     }
+    
+    /**
+     * Response class name
+     *
+     * @return string
+     */
+    protected function getResponseClassName()
+    {
+        return 'GetByOrderResponse';
+    }
 
     /**
      * Request parameters

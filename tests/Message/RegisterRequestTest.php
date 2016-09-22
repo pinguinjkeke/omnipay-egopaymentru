@@ -39,6 +39,16 @@ class RegisterRequestTest extends AbstractRequestTest
     }
 
     /**
+     * Response class name
+     *
+     * @return string
+     */
+    protected function getResponseClassName()
+    {
+        return 'RegisterResponse';
+    }
+
+    /**
      * Request parameters
      *
      * @return array

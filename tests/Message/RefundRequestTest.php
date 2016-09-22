@@ -35,6 +35,16 @@ class RefundRequestTest extends AbstractRequestTest
     }
 
     /**
+     * Response class name
+     *
+     * @return string
+     */
+    protected function getResponseClassName()
+    {
+        return 'RefundResponse';
+    }
+
+    /**
      * Request parameters
      *
      * @return array

@@ -15,6 +15,16 @@ class CancelRequestTest extends AbstractRequestTest
     }
 
     /**
+     * Response class name
+     *
+     * @return string
+     */
+    protected function getResponseClassName()
+    {
+        return 'CancelResponse';
+    }
+
+    /**
      * Request parameters
      *
      * @return array
