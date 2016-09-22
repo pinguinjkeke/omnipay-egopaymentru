@@ -2,6 +2,7 @@
 
 namespace Omnipay\EgopayRu;
 
+use Omnipay\Common\Exception\RuntimeException;
 use Omnipay\Common\Message\AbstractRequest;
 use Omnipay\EgopayRu\Message\CancelResponse;
 use Omnipay\EgopayRu\Message\GetByOrderResponse;
@@ -34,6 +35,34 @@ class GatewayTest extends GatewayTestCase
     protected $mockSoapClient;
 
     /**
+     * Shop id
+     *
+     * @var string
+     */
+    protected $shopId;
+
+    /**
+     * Order
+     *
+     * @var int
+     */
+    protected $orderId;
+
+    /**
+     * User name
+     *
+     * @var string
+     */
+    protected $user;
+
+    /**
+     * Password
+     *
+     * @var string
+     */
+    protected $password;
+
+    /**
      * Sets up the fixture, for example, open a network connection.
      * This method is called before a test is executed.
      */
@@ -44,12 +73,17 @@ class GatewayTest extends GatewayTestCase
         $wsdl = realpath(__DIR__ . '/../src/Resource/orderv2_new.xml');
         $this->mockSoapClient = $this->getMockFromWsdl($wsdl, 'EgopayRuSoapOrderClient');
 
+        $this->shopId = mt_rand(10000, 20000);
+        $this->orderId = mt_rand(1, 999);
+        $this->user = uniqid('', true);
+        $this->password = uniqid('', true);
+
         $this->gateway = new Gateway($this->getHttpClient(), $this->getHttpRequest(), $this->mockSoapClient);
         $this->gateway->setTestMode(true);
-        $this->gateway->setShopId('123456')
-            ->setOrderId(123)
-            ->setUser('hello')
-            ->setPassword('world')
+        $this->gateway->setShopId($this->shopId)
+            ->setOrderId($this->orderId)
+            ->setUser($this->user)
+            ->setPassword($this->password)
             ->setWsdl($wsdl);
     }
 
@@ -74,6 +108,14 @@ class GatewayTest extends GatewayTestCase
                 return 'https://tws.egopay.ru/order/v2/';
             case 'testMode':
                 return true;
+            case 'shop_id':
+                return $this->shopId;
+            case 'order_id':
+                return $this->orderId;
+            case 'user':
+                return $this->user;
+            case 'password':
+                return $this->password;
         }
 
         return uniqid('', true);
@@ -116,6 +158,40 @@ class GatewayTest extends GatewayTestCase
         }
     }
 
+    /**
+     * Test setWsdl method
+     */
+    public function testSetWsdl()
+    {
+        $file = __DIR__ . '/GatewayTest.php';
+
+        $this->gateway->setWsdl($file);
+
+        $this->assertSame($this->gateway->getWsdl(), $file);
+
+        $file = __DIR__ . '/NOn_existentfile' . uniqid('', true);
+
+        try {
+            $this->gateway->setWsdl($file);
+        } catch (RuntimeException $e) {
+            $this->assertSame($e->getMessage(), "WSDL file not exists at \"{$file}\"");
+        }
+    }
+
+    /**
+     * Test chooseEndpoint method
+     */
+    public function testChooseEndpoint()
+    {
+        $this->gateway->setTestMode(false);
+        $this->assertEquals($this->gateway->chooseEndpoint(false)->getEndpoint(), 'https://ws.egopay.ru/order/v2/');
+        $this->assertEquals($this->gateway->chooseEndpoint(true)->getEndpoint(), 'https://ws.egopay.ru/status/v4/');
+
+        $this->gateway->setTestMode(true);
+        $this->assertEquals($this->gateway->chooseEndpoint(false)->getEndpoint(), 'https://tws.egopay.ru/order/v2/');
+        $this->assertEquals($this->gateway->chooseEndpoint(true)->getEndpoint(), 'https://tws.egopay.ru/status/v4/');
+    }
+
     public function testCancelParameters()
     {
         if (!$this->gateway->supportsCancel()) {
@@ -134,25 +210,23 @@ class GatewayTest extends GatewayTestCase
         if (!$this->gateway->supportsCancel()) {
             return;
         }
-
-        list($orderId, $shopId) = array(mt_rand(1, 999), mt_rand(10000, 20000));
         
         $this->mockSoapClient->expects($this->any())
             ->method('cancel')
-            ->will($this->returnValue(GatewayMockValues::getCancelSuccess($shopId, $orderId)));
+            ->will($this->returnValue(GatewayMockValues::getCancelSuccess($this->shopId, $this->orderId)));
 
         /** @var CancelResponse $response */
         $response = $this->gateway->cancel(array(
-            'shop_id' => $shopId,
-            'order_id' => $orderId
+            'shop_id' => $this->shopId,
+            'order_id' => $this->orderId
         ))->send();
         
         $data = $response->getData();
 
         $this->assertTrue($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
-        $this->assertEquals($data['order']['shop_id'], $shopId);
-        $this->assertEquals($data['order']['number'], $orderId);
+        $this->assertEquals($data['order']['shop_id'], $this->shopId);
+        $this->assertEquals($data['order']['number'], $this->orderId);
     }
 
     public function testCancelFail()
@@ -167,7 +241,7 @@ class GatewayTest extends GatewayTestCase
 
         /** @var CancelResponse $response */
         $response = $this->gateway->cancel(array(
-            'order' => array('shop_id' => mt_rand(1, 999), 'number' => mt_rand(10000, 20000))
+            'order' => array('shop_id' => $this->shopId, 'number' => $this->orderId)
         ))->send();
 
         $this->assertFalse($response->isSuccessful());
@@ -216,16 +290,16 @@ class GatewayTest extends GatewayTestCase
             return;
         }
 
-        list($orderId, $shopId, $paymentId) = array(mt_rand(1, 999), mt_rand(10000, 20000), mt_rand(100000, 500000));
+        $paymentId = (string) mt_rand(100000, 500000);
 
         $this->mockSoapClient->expects($this->any())
             ->method('reject')
-            ->will($this->returnValue(GatewayMockValues::getRejectSuccess($shopId, $orderId)));
+            ->will($this->returnValue(GatewayMockValues::getRejectSuccess($this->shopId, $this->orderId)));
 
         /** @var RejectResponse $response */
         $response = $this->gateway->reject(array(
-            'shop_id' => $shopId,
-            'order_id' => $orderId,
+            'shop_id' => $this->shopId,
+            'order_id' => $this->orderId,
             'payment_id' => $paymentId
         ))->send();
         
@@ -233,8 +307,8 @@ class GatewayTest extends GatewayTestCase
 
         $this->assertTrue($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
-        $this->assertEquals($data['order']['shop_id'], $shopId);
-        $this->assertEquals($data['order']['number'], $orderId);
+        $this->assertEquals($data['order']['shop_id'], $this->shopId);
+        $this->assertEquals($data['order']['number'], $this->orderId);
         $this->assertTrue(in_array($data['status'], array('in_progress', 'canceled'), true));
     }
 
@@ -243,16 +317,14 @@ class GatewayTest extends GatewayTestCase
         if (!$this->gateway->supportsReject()) {
             return;
         }
-
-        list($orderId, $shopId) = array(mt_rand(1, 999), mt_rand(10000, 20000));
-
+        
         $this->mockSoapClient->expects($this->any())
             ->method('reject')
             ->will($this->returnValue(GatewayMockValues::getRejectFail()));
 
         /** @var RejectResponse $response */
         $response = $this->gateway->reject(array(
-            'order' => array('shop_id' => $shopId, 'number' => $orderId),
+            'order' => array('shop_id' => $this->shopId, 'number' => $this->orderId),
             'payment_id' => '123456'
         ))->send();
 
@@ -280,16 +352,16 @@ class GatewayTest extends GatewayTestCase
             return;
         }
 
-        list($orderId, $shopId, $paymentId) = array(mt_rand(1, 999), mt_rand(10000, 20000), mt_rand(100000, 500000));
+        $paymentId = (string) mt_rand(100000, 500000);
 
         $this->mockSoapClient->expects($this->any())
             ->method('refund')
-            ->will($this->returnValue(GatewayMockValues::getRefundSuccess($shopId, $orderId)));
+            ->will($this->returnValue(GatewayMockValues::getRefundSuccess($this->shopId, $this->orderId)));
 
         /** @var RefundResponse $response */
         $response = $this->gateway->refund(array(
-            'shop_id' => $shopId,
-            'order_id' => $orderId,
+            'shop_id' => $this->shopId,
+            'order_id' => $this->orderId,
             'refund_id' => "refund1_{$paymentId}",
             'payment_id' => $paymentId,
             'amount' => 10.0,
@@ -300,8 +372,8 @@ class GatewayTest extends GatewayTestCase
 
         $this->assertTrue($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
-        $this->assertEquals($data['order']['shop_id'], $shopId);
-        $this->assertEquals($data['order']['number'], $orderId);
+        $this->assertEquals($data['order']['shop_id'], $this->shopId);
+        $this->assertEquals($data['order']['number'], $this->orderId);
         $this->assertTrue(in_array(
             $data['status'],
             array('acknowledged', 'in_progress', 'canceled'),
@@ -315,7 +387,7 @@ class GatewayTest extends GatewayTestCase
             return;
         }
 
-        list($orderId, $shopId, $paymentId) = array(mt_rand(1, 999), mt_rand(10000, 20000), mt_rand(100000, 500000));
+        $paymentId = mt_rand(100000, 500000);
 
         $this->mockSoapClient->expects($this->any())
             ->method('refund')
@@ -323,8 +395,8 @@ class GatewayTest extends GatewayTestCase
 
         /** @var RefundResponse $response */
         $response = $this->gateway->refund(array(
-            'shop_id' => $shopId,
-            'order_id' => $orderId,
+            'shop_id' => $this->shopId,
+            'order_id' => $this->orderId,
             'payment_id' => $paymentId,
             'refund_id' => "refund1_{$paymentId}",
             'amount' => 10.0,
@@ -355,7 +427,7 @@ class GatewayTest extends GatewayTestCase
             return;
         }
 
-        list($shopId, $orderId, $session) = array(mt_rand(10000, 20000), mt_rand(1, 100), uniqid('', true));
+        $session = uniqid('', true);
         $redirectUrl = 'https://sandbox.egopay.ru/payments/request';
 
         $this->mockSoapClient->expects($this->any())
@@ -364,10 +436,10 @@ class GatewayTest extends GatewayTestCase
 
         /** @var RegisterResponse $response */
         $response = $this->gateway->register(array(
-            'shop_id' => $shopId,
+            'shop_id' => $this->shopId,
             'amount' => 10.00,
             'currency' => 'RUB',
-            'order_id' => $orderId,
+            'order_id' => $this->orderId,
             'url_ok' => '/payment/ok/',
             'url_fault' => '/payment/fail/',
             'language' => 'ru',
@@ -459,28 +531,26 @@ class GatewayTest extends GatewayTestCase
             return;
         }
 
-        list($shopId, $orderId) = array(mt_rand(10000, 20000), mt_rand(1, 100));
-
         /** @var \PHPUnit_Framework_MockObject_MockObject|\SoapClient $mockSoapClient */
         $mockSoapClient = $this->getMockFromWsdl(__DIR__ . '/../src/Resource/statusv4.xml', 'EgopayRuSoapStatusClient');
         $this->gateway->setSoapClient($mockSoapClient);
 
         $mockSoapClient->expects($this->any())
             ->method('get_by_order')
-            ->will($this->returnValue(GatewayMockValues::getStatusSuccess($shopId, $orderId)));
+            ->will($this->returnValue(GatewayMockValues::getStatusSuccess($this->shopId, $this->orderId)));
 
         /** @var GetByOrderResponse $response */
         $response = $this->gateway->status(array(
-            'shop_id' => $shopId,
-            'order_id' => $orderId
+            'shop_id' => $this->shopId,
+            'order_id' => $this->orderId
         ))->send();
         
         $data = $response->getData();
 
         $this->assertTrue($response->isSuccessful());
         $this->assertFalse($response->isRedirect());
-        $this->assertEquals($data['order']['shop_id'], $shopId);
-        $this->assertEquals($data['order']['order_id'], $orderId);
+        $this->assertEquals($data['order']['shop_id'], $this->shopId);
+        $this->assertEquals($data['order']['order_id'], $this->orderId);
 
         $this->gateway->setSoapClient($this->mockSoapClient);
     }

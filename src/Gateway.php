@@ -36,7 +36,7 @@ class Gateway extends AbstractGateway
      *
      * @var string
      */
-    protected $liveOrderEndpoint = '';
+    protected $liveOrderEndpoint = 'https://ws.egopay.ru/order/v2/';
 
     /**
      * Test status endpoint address
@@ -50,7 +50,7 @@ class Gateway extends AbstractGateway
      *
      * @var string
      */
-    protected $liveStatusEndpoint = '';
+    protected $liveStatusEndpoint = 'https://ws.egopay.ru/status/v4/';
 
     /**
      * SoapClient
@@ -126,7 +126,11 @@ class Gateway extends AbstractGateway
         return array(
             'testMode' => false,
             'endpoint' => $this->testOrderEndpoint,
-            'wsdl' => __DIR__ . '/Resource/orderv2_new.xml'
+            'wsdl' => __DIR__ . '/Resource/orderv2_new.xml',
+            'shop_id' => '',
+            'order_id' => '',
+            'user' => '',
+            'password' => ''
         );
     }
 
@@ -181,7 +185,7 @@ class Gateway extends AbstractGateway
      * Set status or order endpoint with or without test mode
      *
      * @param bool $statusEndpoint Status or order endpoint
-     * @return string
+     * @return $this
      */
     public function chooseEndpoint($statusEndpoint = false)
     {
@@ -195,7 +199,7 @@ class Gateway extends AbstractGateway
     }
 
     /**
-     * Get shop id you received from Egopayment
+     * Get shop id you received from Egopay
      *
      * @return int
      */
@@ -205,7 +209,7 @@ class Gateway extends AbstractGateway
     }
 
     /**
-     * Set shop id you received from Egopayment
+     * Set shop id you received from Egopay
      *
      * @param int $shopId
      * @return $this
