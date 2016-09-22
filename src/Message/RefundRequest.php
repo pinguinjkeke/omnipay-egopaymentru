@@ -115,7 +115,7 @@ class RefundRequest extends SoapAbstractRequest
             'shop_id', 'order_id', 'user', 'password',
             'payment_id', 'amount', 'currency', 'refund_id'
         );
-        
+
         $data = array(
             'order' => array(
                 'shop_id' => $this->getShopId(),
@@ -129,7 +129,7 @@ class RefundRequest extends SoapAbstractRequest
             'refund_id' => $this->getRefundId()
         );
         
-        if (!count($this->items)) {
+        if (count($this->items)) {
             $data['items'] = $this->items;
         }
 
