@@ -2,6 +2,9 @@
 
 namespace Omnipay\EgopayRu\Message;
 
+use Mockery;
+use Omnipay\Common\Exception\RuntimeException;
+
 class RefundRequestTest extends AbstractRequestTest
 {
     /**
@@ -87,6 +90,7 @@ class RefundRequestTest extends AbstractRequestTest
      */
     public function testItems()
     {
+        // Test add array
         $item = array(
             'id' => mt_rand(1, 100),
             'amount' => array('amount' => '10.00', 'currency' => 'RUB')
@@ -94,8 +98,32 @@ class RefundRequestTest extends AbstractRequestTest
         
         $this->request->addItem($item);
 
+        // Test add contract implemented object
+        $contractItem = $this->getMockBuilder('\\Omnipay\\EgopayRu \\Contracts\\OrderItemContract')
+            ->setMethods(array(
+                'getOrderItemTypeName',
+                'getOrderItemNumber',
+                'getOrderItemCost',
+                'getOrderItemDescription',
+                'getOrderItemHost'
+            ))->getMock();
+
+        $this->request->addItem($contractItem);
+
         $data = $this->request->getData();
 
-        $this->assertEquals($data['items'], array($item));
+        $this->assertEquals($data['items'], array($item, array(
+            'id' => $contractItem->getOrderItemNumber(),
+            'amount' => array(
+                'amount' => $contractItem->getOrderItemCost(),
+                'currency' => $this->request->getCurrency()
+            )
+        )));
+
+        try {
+            $this->request->addItem('wrong data');
+        } catch (RuntimeException $e) {
+            $this->assertEquals($e->getMessage(), 'Item must be an array or implement OrderItemContract interface');
+        }
     }
 }
