@@ -2,7 +2,7 @@
 
 **EgopayRu driver for the Omnipay PHP payment processing library**
 
-[![Build Status](https://travis-ci.org/thephpleague/omnipay-2checkout.png?branch=master)](https://travis-ci.org/pinguinjkeke/omnipay-egopaymentru)
+[![Build Status](https://api.travis-ci.org/pinguinjkeke/omnipay-egopaymentru.svg)](https://travis-ci.org/pinguinjkeke/omnipay-egopaymentru)
 [![Latest Stable Version](https://poser.pugx.org/pinguinjkeke/omnipay-egopaymentru/version.png)](https://packagist.org/packages/pinguinjkeke/omnipay-egopaymentru)
 [![Total Downloads](https://poser.pugx.org/pinguinjkeke/omnipay-egopaymentru/d/total.png)](https://packagist.org/packages/pinguinjkeke/omnipay-egopaymentru)
 
