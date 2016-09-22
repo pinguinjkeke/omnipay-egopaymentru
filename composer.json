@@ -1,5 +1,6 @@
 {
     "name": "pinguinjkeke/omnipay-egopaymentru",
+    "version": "0.1.0",
     "type": "library",
     "description": "Egopay.ru support for Omnipay payment processing library",
     "keywords": [

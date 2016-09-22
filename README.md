@@ -17,7 +17,7 @@ to your `composer.json` file:
 ```json
 {
     "require": {
-        "pinguinjkeke/omnipay-egopaymentru": "~1.0"
+        "pinguinjkeke/omnipay-egopaymentru": "~0.1.0"
     }
 }
 ```
