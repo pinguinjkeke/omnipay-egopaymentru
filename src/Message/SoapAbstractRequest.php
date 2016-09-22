@@ -213,6 +213,10 @@ abstract class SoapAbstractRequest extends AbstractRequest
         }
 
         try {
+            if (!$this->getEndpoint()) {
+                throw new SoapFault('Client', 'No endpoint provided');
+            }
+
             $this->soapClient = new SoapClient($this->getWsdl(), array(
                 'uri' => 'http://www.sirena-travel.ru/',
                 'location' => $this->getEndpoint(),
