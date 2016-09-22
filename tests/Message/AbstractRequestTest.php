@@ -33,6 +33,20 @@ abstract class AbstractRequestTest extends TestCase
     protected $orderId;
 
     /**
+     * Generated user name
+     * 
+     * @var string
+     */
+    protected $user;
+
+    /**
+     * Generated password
+     * 
+     * @var string
+     */
+    protected $password;
+
+    /**
      * Request class name
      *
      * @return string
@@ -56,7 +70,12 @@ abstract class AbstractRequestTest extends TestCase
     {
         $requestClass = '\\Omnipay\\EgopayRu\\Message\\' . $this->getRequestClassName();
 
-        list($this->shopId, $this->orderId) = array(mt_rand(10000, 20000), mt_rand(1, 100));
+        list($this->shopId, $this->orderId, $this->user, $this->password) = array(
+            mt_rand(10000, 20000),
+            mt_rand(1, 100),
+            uniqid('', true),
+            uniqid('', true)
+        );
         
         if (!class_exists($requestClass)) {
             throw new RuntimeException("Cannot find \"{$requestClass}\" class");

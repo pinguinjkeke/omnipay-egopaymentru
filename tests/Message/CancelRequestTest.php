@@ -22,8 +22,8 @@ class CancelRequestTest extends AbstractRequestTest
     protected function getRequestParameters()
     {
         return array(
-            'user' => 'hello',
-            'password' => 'world',
+            'user' => $this->user,
+            'password' => $this->password,
             'shop_id' => $this->shopId,
             'order_id' => $this->orderId
         );

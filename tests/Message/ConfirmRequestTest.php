@@ -22,10 +22,10 @@ class ConfirmRequestTest extends AbstractRequestTest
     protected function getRequestParameters()
     {
         return array(
-            'shop_id' => '16531',
-            'order_id' => 456,
-            'user' => 'hello',
-            'password' => 'world',
+            'shop_id' => $this->shopId,
+            'order_id' => $this->orderId,
+            'user' => $this->user,
+            'password' => $this->password,
             'amount' => '10.00',
             'currency' => 'RUB',
             'txn_id' => 'confirm1_123456'
@@ -39,7 +39,7 @@ class ConfirmRequestTest extends AbstractRequestTest
     {
         $data = $this->request->getData();
 
-        $this->assertEquals($data['order'], array('shop_id' => '16531', 'number' => 456));
+        $this->assertEquals($data['order'], array('shop_id' => $this->shopId, 'number' => $this->orderId));
         $this->assertEquals($data['cost'], array('amount' => '10.00', 'currency' => 'RUB'));
         $this->assertEquals($data['txn_id'], 'confirm1_123456');
     }
