@@ -22,7 +22,7 @@ interface OrderItemContract
     /**
      * Item cost must be an array i.e. ['amount' => 10.0, 'currency' => 'RUB']
      *
-     * @return array
+     * @return int|string
      */
     public function getOrderItemCost();
 

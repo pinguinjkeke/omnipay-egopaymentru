@@ -50,11 +50,11 @@ class RegisterRequest extends SoapAbstractRequest
     /**
      * Set register mode
      *
-     * @param int $mode
+     * @param string $mode
      * @return \Omnipay\Common\Message\AbstractRequest
      * @throws \Omnipay\Common\Exception\RuntimeException
      */
-    public function setRegisterMode($mode = 0)
+    public function setRegisterMode($mode = 'online')
     {
         if (!in_array($mode, self::$modes, true)) {
             throw new RuntimeException("No \"{$mode}\" payment mode exists!");
@@ -304,7 +304,10 @@ class RegisterRequest extends SoapAbstractRequest
             $this->items[] = array(
                 'typename' => $item->getOrderItemTypeName(),
                 'number' => $item->getOrderItemNumber(),
-                'amount' => $item->getOrderItemCost(),
+                'amount' => array(
+                    'amount' => $item->getOrderItemCost(),
+                    'currency' => $this->getCurrency()
+                ),
                 'descr' => $item->getOrderItemDescription(),
                 'host' => $item->getOrderItemHost()
             );

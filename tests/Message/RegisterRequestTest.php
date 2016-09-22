@@ -2,6 +2,8 @@
 
 namespace Omnipay\EgopayRu\Message;
 
+use Omnipay\Common\Exception\RuntimeException;
+
 class RegisterRequestTest extends AbstractRequestTest
 {
     /**
@@ -116,9 +118,131 @@ class RegisterRequestTest extends AbstractRequestTest
         );
 
         $this->request->addItem($item);
+        
+        $contractItem = $this->getMockBuilder('\\Omnipay\\EgopayRu\\Contracts\\OrderItemContract')
+            ->setMethods(array(
+                'getOrderItemTypeName',
+                'getOrderItemNumber',
+                'getOrderItemCost',
+                'getOrderItemDescription',
+                'getOrderItemHost'
+            ))->getMock();
 
+        $this->request->addItem($contractItem);
+        
         $data = $this->request->getData();
 
-        $this->assertEquals($data['description']['items'], array($item));
+        $this->assertEquals($data['description']['items'], array($item, array(
+            'typename' => $contractItem->getOrderItemTypeName(),
+            'number' => $contractItem->getOrderItemNumber(),
+            'amount' => array(
+                'amount' => $contractItem->getOrderItemCost(),
+                'currency' => $this->request->getCurrency()
+            ),
+            'descr' => $contractItem->getOrderItemDescription(),
+            'host' => $contractItem->getOrderItemHost()
+        )));
+
+        try {
+            $this->request->addItem('wrong data');
+        } catch (RuntimeException $e) {
+            $this->assertEquals($e->getMessage(), 'Item must be a type of array or implement the OrderItemContract');
+        }
+    }
+
+    public function testSetCustomer()
+    {
+        list($id, $name, $email, $phone) = array(1, 'Vasya Pupkin', 'a@b.ru', '123456');
+        $customer = compact('id', 'name', 'email', 'phone');
+
+        $this->request->setCustomer($customer);
+
+        $this->assertEquals($this->request->getCustomerId(), $id);
+        $this->assertEquals($this->request->getCustomerName(), $name);
+        $this->assertEquals($this->request->getCustomerEmail(), $email);
+        $this->assertEquals($this->request->getCustomerPhone(), $phone);
+
+        $contractCustomer = $this->getMockBuilder('\\Omnipay\\EgopayRu\\Contracts\\CustomerContract')
+            ->setMethods(array(
+                'getCustomerId',
+                'getCustomerName',
+                'getCustomerEmail',
+                'getCustomerPhone'
+            ))->getMock();
+
+        $this->request->setCustomer($contractCustomer);
+
+        $this->assertEquals($this->request->getCustomerId(), $contractCustomer->getCustomerId());
+        $this->assertEquals($this->request->getCustomerName(), $contractCustomer->getCustomerName());
+        $this->assertEquals($this->request->getCustomerEmail(), $contractCustomer->getCustomerEmail());
+        $this->assertEquals($this->request->getCustomerPhone(), $contractCustomer->getCustomerPhone());
+
+        try {
+            $this->request->setCustomer('wrong data');
+        } catch (RuntimeException $e) {
+            $this->assertEquals($e->getMessage(), 'Customer must be a type of array or implement CustomerContract');
+        }
+    }
+
+    /**
+     * Test setCurrency mode
+     */
+    public function testSetCurrency()
+    {
+        $this->request->setCurrency('EUR');
+
+        $this->assertEquals($this->request->getCurrency(), 'EUR');
+
+        $currency = 'BITCOIN';
+        $currencies = array('RUB', 'EUR', 'USD');
+
+        try {
+            $this->request->setCurrency($currency);
+        } catch (RuntimeException $e) {
+            $this->assertEquals(
+                $e->getMessage(),
+                'Currency must be one of [' . implode(',', $currencies) . "], but {$currency} given."
+            );
+        }
+    }
+
+    /**
+     * Test setLanguage method
+     */
+    public function testSetLanguage()
+    {
+        $this->request->setLanguage('en');
+
+        $this->assertEquals($this->request->getLanguage(), 'en');
+
+        $language = 'jp';
+        $languages = array('ru', 'en', 'de', 'cn');
+
+        try {
+            $this->request->setLanguage($language);
+        } catch (RuntimeException $e) {
+            $this->assertEquals(
+                $e->getMessage(),
+                'Language must be one of ' . implode(', ', $languages) . ", but {$language} given"
+            );
+        }
+    }
+
+    /**
+     * Test setRegisterMode method
+     */
+    public function testSetRegisterMode()
+    {
+        $this->request->setRegisterMode('online');
+        
+        $this->assertSame($this->request->getRegisterMode(), 'online');
+
+        $mode = 'some_non_existent_register_mode';
+
+        try {
+            $this->request->setRegisterMode($mode);
+        } catch (RuntimeException $e) {
+            $this->assertSame($e->getMessage(), "No \"{$mode}\" payment mode exists!");
+        }
     }
 }
