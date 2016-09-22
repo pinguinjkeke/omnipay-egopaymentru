@@ -73,7 +73,7 @@ class RegisterRequest extends SoapAbstractRequest
     public function setCurrency($currency)
     {
         $currency = strtoupper($currency);
-        $currencies = ['RUB', 'EUR', 'USD'];
+        $currencies = array('RUB', 'EUR', 'USD');
 
         if (!in_array($currency, $currencies, true)) {
             throw new RuntimeException(
